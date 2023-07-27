@@ -16,5 +16,5 @@ source $HOME/.local/pipx/venvs/mlconjug3/bin/activate
 
 ```
 cd $HOME/path/to/app/
-python $HOME/Scripts/conjugue-moi/conj.py"
+python conj.py"
 ```
