@@ -1,4 +1,5 @@
 import requests
+import json
 from bs4 import BeautifulSoup
 from selenium.webdriver import Firefox, FirefoxOptions
 
@@ -27,5 +28,7 @@ for row in rows:
         if text:
             irregular_verbs.append(text)
 
-
 print(irregular_verbs)
+
+with open('irregular_verbs.json', 'w', encoding='utf-8') as file:
+    json.dump(irregular_verbs, file, ensure_ascii=False)
