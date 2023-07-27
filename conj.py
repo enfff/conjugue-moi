@@ -3,25 +3,30 @@ from difflib import SequenceMatcher, Differ, ndiff
 import difflib as dl
 from pprint import pprint
 import sys
+import random
+import json
 
-difficulty = "normal"
-irregular_verb_probability = 0.4
-regular_verb_probability = 0.6
+# constants
+# difficulty = "normal"
+# irregular_verb_probability = 0.4
+# regular_verb_probability = 0.6
+studying=True
 
-##
-# mlconjug3 -l fr -s pronoun 'aimer' 'être' 'aller'
+correct=0
+wrong=0
 
-# initialize the conjugator
+congratulations = [
+    "Dix points pour Griffondor! 🧙",
+    "Vous êtes quoi, un natif? 👀",
+    "+1 😌",
+    "+1 ✔️",
+    "+1 🔥",
+]
 
-# print all the conjugated forms as a list of tuples.
-# print(verb.iterate())
-
-# print(verb["Indicatif"]["Présent"])
-# check if the form "je parle" is in the conjugated forms. Prints True.
-# print("je suis" in verb)
-
-# print(verb.conjug_info["Indicatif","Présent","1s"])
-# print(verb["Indicatif", "Présent", "je"])
+mistakes = [
+    "Noup",
+    "Noo",
+]
 
 # pprint(result)
 # https://towardsdatascience.com/find-the-difference-in-python-68bbd000e513
@@ -29,36 +34,73 @@ regular_verb_probability = 0.6
 
 
 def check_input(input: str) -> float:
+    print('TODO NOT YET IMPLEMENTED')
     return
 
+def choose_tense() -> [str, str, str]:
+    """
+        chooses a
+    """
+    return ["Indicatif", "Présent", "je"]
+
 def choose_next_verb() -> str:
-    # TODO
-    return 'être'
+    return random.choice(irregular_verbs)
+
+def congratulate():
+    print(random.choice(congratulations))
+
+def mistake():
+    print(random.choice(mistakes))
+
+def hello():
+    print('Bienvenue dans conjugue-moi! 🇫🇷')
 
 if __name__ == "__main__":
+    with open('irregular_verbs.json', 'r', encoding='utf-8') as file:
+        irregular_verbs = json.load(file)
+        # regular_verbs = ["manger", "parler"] # TODO
+    
+    hello()
+    
     conjugator = Conjugator(language='fr')
 
-    irregular_verbs = ["être", "avoir", "aller"]
-    regular_verbs = ["manger", "parler"]
+    while(studying):
+        # TODO choose a verb
+        chosen_verb = choose_next_verb()
+        print(chosen_verb)
+        verb = conjugator.conjugate(chosen_verb)
 
-    # TODO choose a verb
-    chosen_verb = choose_next_verb()
+        # Choose tense
+        chosen_tense = choose_tense()
 
-    verb = conjugator.conjugate(chosen_verb)
+        user_input=""
+        while not user_input:
+            user_input = input(f"{chosen_tense} : ")
+            
+        correct_verb = verb[chosen_tense]
 
-    text1 = list()
-    text2 = list()
+        if user_input == correct_verb:
+            congratulate()
+            correct = correct + 1
+        elif not user_input:
+            print('this doesnt exist')
+        else:
+            mistake()
+            wrong = wrong + 1
 
-    text1.append(verb["Indicatif", "Présent", "je"])
-    text2.append(input('Indicatif Présent, 1s: '))
+            text1 = list()
+            text2 = list()
+            
+            text1.append(correct_verb)
+            text2.append(user_input)
 
-    differ = dl.Differ()
-    result = list(differ.compare(text1, text2))
+            differ = dl.Differ()
+            result = list(differ.compare(text1, text2))
 
-    for line in result:
-        lines = line.split('\n')
-        for i, l in enumerate(lines):
-            sys.stdout.write(l)
-            if i < len(lines) - 1:
-                sys.stdout.write('\n')
-        sys.stdout.write('\n')  # Add a new line after each comparison
+            for line in result:
+                lines = line.split('\n')
+                for i, l in enumerate(lines):
+                    sys.stdout.write(l)
+                    if i < len(lines) - 1:
+                        sys.stdout.write('\n')
+                sys.stdout.write('\n')  # Add a new line after each comparison
